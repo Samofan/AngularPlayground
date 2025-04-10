@@ -1,1 +1,22 @@
-<p>product-table works!</p>
+<div class="card">
+  <p-table [value]="products()" [tableStyle]="{ 'min-width': '50rem' }" [loading]="products().length < 1">
+      <ng-template #header>
+          <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Category</th>
+          </tr>
+      </ng-template>
+      <ng-template #body let-product>
+          <tr>
+              <td>{{ product.id }}</td>
+              <td>{{ product.name }}</td>
+              <td>{{ product.description }}</td>
+              <td>{{ product.price }}</td>
+              <td><p-tag severity="info" value="{{ product.category }}" /></td>
+          </tr>
+      </ng-template>
+  </p-table>
+</div>

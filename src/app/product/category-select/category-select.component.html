@@ -1,3 +1,3 @@
 <div class="card flex justify-center">
-  <p-multiselect [options]="categories()" (onChange)="onChange($event)" placeholder="Select Category" display="chip" styleClass="w-full md:w-80" />
+  <p-multiselect [options]="categories()" (onChange)="onChange($event)" placeholder="Select Category" [loading]="categories().length < 1" display="chip" styleClass="w-full md:w-80" />
 </div>
