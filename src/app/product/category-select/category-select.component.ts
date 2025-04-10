@@ -14,8 +14,6 @@ export class CategorySelectComponent {
 
   onSelectionChanged = output<Category[]>();
 
-  selectedCategories: Category[] = [];
-
   onChange(event: MultiSelectChangeEvent): void {
     this.onSelectionChanged.emit(event.value as Category[]);
   }
