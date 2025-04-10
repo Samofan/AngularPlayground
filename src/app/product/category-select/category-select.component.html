@@ -1,3 +1,3 @@
-@for (category of availableCategories(); track $index) {
-  <p>{{ category }}</p>
-}
+<div class="card flex justify-center">
+  <p-multiselect [options]="categories()" [(ngModel)]="selectedCategories" (onChange)="onChange($event)" placeholder="Select Category" display="chip" styleClass="w-full md:w-80" />
+</div>

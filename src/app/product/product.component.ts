@@ -22,4 +22,8 @@ export class ProductComponent implements OnInit {
       this.availableCategories = this.productService.getDistinctCategoriesOfProducts(this.products);
     });
   }
+
+  onCategorySelected(selectedCategories: any): void {
+    console.log('Selected categories:', selectedCategories);
+  }
 }
