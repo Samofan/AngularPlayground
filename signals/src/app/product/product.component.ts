@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CategorySelectComponent } from './category-select/category-select.component';
 import { ProductTableComponent } from './product-table/product-table.component';
 import { Category, Product, ProductService } from '@/shared';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-product',
@@ -9,36 +10,36 @@ import { Category, Product, ProductService } from '@/shared';
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss',
 })
-export class ProductComponent implements OnInit {
+export class ProductComponent {
   private readonly productService = inject(ProductService);
 
-  availableCategories: Category[] = [];
-  selectedCategories: Category[] = [];
-  products: Product[] = [];
+  // All products from product service.
+  readonly allProducts = toSignal(
+    this.productService.getProducts(),
+    { initialValue: [] }
+  );
 
-  ngOnInit(): void {
-    this.productService.getProducts().subscribe((products) => {
-      this.products = products;
-      this.availableCategories =
-        this.productService.getDistinctCategoriesOfProducts(this.products);
-    });
-  }
+  // Selected categories from category select component.
+  private readonly selectedCategories = signal<Category[]>([]);
 
-  onCategorySelected(selectedCategories: Category[]): void {
-    this.selectedCategories = selectedCategories;
+  // Filtered products based on selected categories.
+  readonly filteredProducts = computed(() => {
+    const selected = this.selectedCategories();
+    const all = this.allProducts();
 
-    if (this.selectedCategories.length === 0) {
-      this.productService.getProducts().subscribe((products) => {
-        this.products = products;
-      });
-    } else {
-      this.productService.getProducts().subscribe((products) => {
-        this.products = products.filter((product) =>
-          this.selectedCategories.some(
-            (category) => category === product.category
-          )
-        );
-      });
-    }
+    if (selected.length === 0) return all;
+
+    return all.filter(p =>
+      selected.some(c => c === p.category)
+    );
+  });
+
+  // Distinct categoriies of all products.
+  readonly availableCategories = computed(() =>
+    this.productService.getDistinctCategoriesOfProducts(this.allProducts())
+  );
+
+  onCategorySelected(categories: Category[]) {
+    this.selectedCategories.set(categories);
   }
 }
